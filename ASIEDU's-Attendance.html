@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance System</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-light: #e0e6ff;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --light-gray: #e9ecef;
+            --success-color: #4cc9f0;
+            --success-bg: #e6f7f0;
+            --warning-color: #f8961e;
+            --warning-bg: #fff5e6;
+            --danger-color: #f94144;
+            --danger-bg: #fee9e9;
+            --info-color: #7a6ff0;
+            --border-radius: 12px;
+            --box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f5f7fa;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+        
+        /* Login Section */
+        .login-container {
+            max-width: 500px;
+            margin: 5rem auto 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo img {
+            height: 100px;
+            margin-bottom: 1rem;
+            object-fit: contain;
+        }
+        
+        .logo h2 {
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .logo p {
+            color: var(--gray-color);
+        }
+        
+        .form-control {
+            padding: 12px 15px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            transition: var(--transition);
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+        
+        .btn-primary:hover, .btn-primary:focus {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+        
+        .input-group-text {
+            background-color: white;
+            border-right: none;
+            color: var(--gray-color);
+        }
+        
+        .input-group .form-control {
+            border-left: none;
+        }
+        
+        /* Dashboard Section */
+        .sidebar {
+            background: var(--dark-color);
+            color: white;
+            min-height: 100vh;
+            padding: 1.5rem;
+            position: fixed;
+            width: 250px;
+            transition: var(--transition);
+            z-index: 100;
+        }
+        
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-brand img {
+            height: 50px;
+            margin-right: 10px;
+            object-fit: contain;
+        }
+        
+        .sidebar-brand h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+            color: white;
+        }
+        
+        .nav-link {
+            color: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 0.5rem;
+            transition: var(--transition);
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            margin-right: 10px;
+        }
+        
+        .sidebar-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-profile .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        .user-profile .user-info small {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.8rem;
+        }
+        
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+            transition: var(--transition);
+        }
+        
+        /* Content Sections */
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        /* Cards */
+        .card {
+            border: none;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+            transition: var(--transition);
+            margin-bottom: 1.5rem;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card-header {
+            background-color: white;
+            border-bottom: 1px solid var(--light-gray);
+            font-weight: 600;
+            padding: 1rem 1.5rem;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        /* Stats Cards */
+        .stat-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+        
+        .stat-card .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.25rem;
+            color: white;
+        }
+        
+        .stat-card .stat-icon.primary {
+            background-color: var(--primary-color);
+        }
+        
+        .stat-card .stat-icon.success {
+            background-color: var(--success-color);
+        }
+        
+        .stat-card .stat-icon.warning {
+            background-color: var(--warning-color);
+        }
+        
+        .stat-card .stat-icon.danger {
+            background-color: var(--danger-color);
+        }
+        
+        .stat-card .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-card .stat-label {
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+        
+        /* Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+        
+        .badge-present {
+            background-color: var(--success-bg);
+            color: var(--success-color);
+        }
+        
+        .badge-absent {
+            background-color: var(--danger-bg);
+            color: var(--danger-color);
+        }
+        
+        .badge-late {
+            background-color: var(--warning-bg);
+            color: var(--warning-color);
+        }
+        
+        .badge-excused {
+            background-color: #f0e6ff;
+            color: var(--info-color);
+        }
+        
+        /* Tables */
+        .table {
+            color: var(--dark-color);
+        }
+        
+        .table th {
+            font-weight: 600;
+            border-top: none;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .table td {
+            vertical-align: middle;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+        
+        /* Avatar */
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+        
+        /* QR Scanner */
+        .qr-scanner-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: #f0f0f0;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .qr-scanner-container video {
+            width: 100%;
+            border-radius: 8px;
+        }
+        
+        /* Floating Action Button */
+        .floating-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 20px rgba(67, 97, 238, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 1000;
+        }
+        
+        .floating-btn:hover {
+            transform: translateY(-5px) scale(1.1);
+            background: var(--secondary-color);
+        }
+        
+        /* Responsive */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            
+            .sidebar.active {
+                transform: translateX(0);
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .navbar-toggler {
+                display: block;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .login-container {
+                margin-top: 2rem;
+                padding: 1.5rem;
+            }
+            
+            .stat-card {
+                min-width: 100%;
+            }
+        }
+        
+        /* Custom Utilities */
+        .cursor-pointer {
+            cursor: pointer;
+        }
+        
+        .text-primary {
+            color: var(--primary-color) !important;
+        }
+        
+        .bg-primary-light {
+            background-color: var(--primary-light);
+        }
+
+        /* Loading spinner */
+        .spinner-container {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Error messages */
+        .error-message {
+            color: var(--danger-color);
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .is-invalid {
+            border-color: var(--danger-color) !important;
+        }
+
+        .is-invalid:focus {
+            box-shadow: 0 0 0 0.25rem rgba(249, 65, 68, 0.25) !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Spinner -->
+    <div class="spinner-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Login Section -->
+    <div id="login-section">
+        <div class="container">
+            <div class="login-container">
+                <div class="logo">
+                    <img src="https://via.placeholder.com/100x100?text=SAS" alt="Smart Attendance Logo">
+                    <h2>Smart Attendance</h2>
+                    <p class="text-muted">Sign in to access your dashboard</p>
+                </div>
+                
+                <form id="login-form">
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            <input type="text" class="form-control" id="username" placeholder="Enter your username" required>
+                        </div>
+                        <div class="error-message" id="username-error"></div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+                        </div>
+                        <div class="error-message" id="password-error"></div>
+                    </div>
+                    
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember-me">
+                        <label class="form-check-label" for="remember-me">Remember me</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary w-100" id="login-btn">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                    </button>
+                    
+                    <div class="text-center mt-3">
+                        <a href="#forgot-password" class="text-muted" data-bs-toggle="modal">Forgot password?</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Forgot Password Modal -->
+    <div class="modal fade" id="forgot-password" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset Password</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="forgot-password-form">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                            <div class="error-message" id="email-error"></div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Send Reset Link</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dashboard Section (Hidden by default) -->
+    <div id="dashboard-section" style="display: none;">
+        <!-- Sidebar Toggle Button (Mobile) -->
+        <button class="btn btn-primary d-lg-none m-3 sidebar-toggler" type="button">
+            <i class="fas fa-bars"></i>
+        </button>
+        
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-brand">
+                <img src="https://via.placeholder.com/50x50?text=SAS" alt="Smart Attendance Logo">
+                <h3>Smart Attendance</h3>
+            </div>
+            
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="mark-attendance">
+                        <i class="fas fa-check-circle"></i> Mark Attendance
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="students">
+                        <i class="fas fa-users"></i> Students
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="assessments">
+                        <i class="fas fa-clipboard-check"></i> Assessments
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="reports">
+                        <i class="fas fa-chart-bar"></i> Reports
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="calendar">
+                        <i class="fas fa-calendar-alt"></i> Calendar
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#" data-section="settings">
+                        <i class="fas fa-cog"></i> Settings
+                    </a>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar">AM</div>
+                    <div class="user-info">
+                        <div class="fw-bold">Asiedu Messiah</div>
+                        <small>Administrator</small>
+                    </div>
+                </div>
+                <a href="#" class="d-block text-white mt-2 text-decoration-none" id="logout-btn">
+                    <i class="fas fa-sign-out-alt me-1"></i> Logout
+                </a>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Dashboard Content -->
+            <div class="content-section active" id="dashboard-content">
+                <div class="container-fluid">
+                    <!-- Page Header -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h2 class="mb-1"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</h2>
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item"><a href="#">Home</a></li>
+                                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                                </ol>
+                            </nav>
+                        </div>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="timeRangeDropdown" data-bs-toggle="dropdown">
+                                <i class="fas fa-calendar me-1"></i> Today
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item time-range" href="#" data-range="today">Today</a></li>
+                                <li><a class="dropdown-item time-range" href="#" data-range="week">This Week</a></li>
+                                <li><a class="dropdown-item time-range" href="#" data-range="month">This Month</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card stat-card">
+                                <div class="stat-icon primary">
+                                    <i class="fas fa-user-check"></i>
+                                </div>
+                                <h3 class="stat-value">87%</h3>
+                                <p class="stat-label">Today's Attendance</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" style="width: 87%"></div>
+                                </div>
+                                <small class="text-muted">145 of 167 students present</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card stat-card">
+                                <div class="stat-icon success">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <h3 class="stat-value">92%</h3>
+                                <p class="stat-label">Monthly Average</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-success" style="width: 92%"></div>
+                                </div>
+                                <small class="text-muted">+2% from last month</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card stat-card">
+                                <div class="stat-icon warning">
+                                    <i class="fas fa-clipboard-list"></i>
+                                </div>
+                                <h3 class="stat-value">12</h3>
+                                <p class="stat-label">Pending Assessments</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-warning" style="width: 60%"></div>
+                                </div>
+                                <small class="text-muted">12 of 20 pending</small>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card stat-card">
+                                <div class="stat-icon danger">
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                </div>
+                                <h3 class="stat-value">8</h3>
+                                <p class="stat-label">Active Classes</p>
+                                <div class="progress">
+                                    <div class="progress-bar bg-info" style="width: 80%"></div>
+                                </div>
+                                <small class="text-muted">8 of 10 active</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts -->
+                    <div class="row mb-4">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i> Attendance Overview</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="attendanceChart" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i> Attendance Distribution</h5>
+                                </div>
+                                <div class="card-body">
+                                    <canvas id="attendancePieChart" height="300"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Attendance -->
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0"><i class="fas fa-history me-2"></i> Recent Attendance</h5>
+                            <div>
+                                <button class="btn btn-sm btn-outline-primary me-2" id="refresh-attendance">
+                                    <i class="fas fa-sync-alt me-1"></i> Refresh
+                                </button>
+                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#markAttendanceModal">
+                                    <i class="fas fa-plus me-1"></i> Add New
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="attendance-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>ID</th>
+                                            <th>Time</th>
+                                            <th>Class</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar">JD</div>
+                                                    <div>Asiedu Victoria</div>
+                                                </div>
+                                            </td>
+                                            <td>MES227786</td>
+                                            <td>08:15 AM</td>
+                                            <td>Mathematics</td>
+                                            <td>
+                                                <span class="badge badge-present">
+                                                    <i class="fas fa-check-circle me-1"></i> Present
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary me-1" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar">AS</div>
+                                                    <div>Kofi Simon</div>
+                                                </div>
+                                            </td>
+                                            <td>MES023002</td>
+                                            <td>08:25 AM</td>
+                                            <td>Mathematics</td>
+                                            <td>
+                                                <span class="badge badge-late">
+                                                    <i class="fas fa-clock me-1"></i> Late
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary me-1" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar">RJ</div>
+                                                    <div>Anita Andzie</div>
+                                                </div>
+                                            </td>
+                                            <td>MES223003</td>
+                                            <td>-</td>
+                                            <td>Economics</td>
+                                            <td>
+                                                <span class="badge badge-absent">
+                                                    <i class="fas fa-times-circle me-1"></i> Absent
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary me-1" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar">MB</div>
+                                                    <div>Jesus Messiah</div>
+                                                </div>
+                                            </td>
+                                            <td>MES823004</td>
+                                            <td>08:10 AM</td>
+                                            <td>Mathematics</td>
+                                            <td>
+                                                <span class="badge badge-present">
+                                                    <i class="fas fa-check-circle me-1"></i> Present
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary me-1" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <div class="avatar">DW</div>
+                                                    <div>Justice Asiedu Nkrumah</div>
+                                                </div>
+                                            </td>
+                                            <td>MES923005</td>
+                                            <td>08:05 AM</td>
+                                            <td>Mathematics</td>
+                                            <td>
+                                                <span class="badge badge-present">
+                                                    <i class="fas fa-check-circle me-1"></i> Present
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <button class="btn btn-sm btn-outline-secondary me-1" title="Edit">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" title="Delete">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Next</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mark Attendance Content -->
+            <div class="content-section" id="mark-attendance-content">
+                <div class="container-fluid">
+                    <h2 class="mb-4"><i class="fas fa-check-circle me-2"></i> Mark Attendance</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Quick Attendance</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Use the floating action button to mark attendance or select students below.</p>
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#markAttendanceModal">
+                                <i class="fas fa-plus me-1"></i> Mark Attendance
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Students Content -->
+            <div class="content-section" id="students-content">
+                <div class="container-fluid">
+                    <h2 class="mb-4"><i class="fas fa-users me-2"></i> Students</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Student Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Student management content will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Assessments Content -->
+            <div class="content-section" id="assessments-content">
+                <div class="container-fluid">
+                    <h2 class="mb-4"><i class="fas fa-clipboard-check me-2"></i> Assessments</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Assessment Management</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Assessment management content will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reports Content -->
+            <div class="content-section" id="reports-content">
+                <div class="container-fluid">
+                    <h2 class="mb-4"><i class="fas fa-chart-bar me-2"></i> Reports</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Attendance Reports</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Report generation content will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calendar Content -->
+            <div class="content-section" id="calendar-content">
+                <div class="container-fluid">
+                    <h2 class="mb-4"><i class="fas fa-calendar-alt me-2"></i> Calendar</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">Academic Calendar</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>Calendar content will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Settings Content -->
+            <div class="content-section" id="settings-content">
+                <div class="container-fluid">
+                    <h2 class="mb-4"><i class="fas fa-cog me-2"></i> Settings</h2>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">System Settings</h5>
+                        </div>
+                        <div class="card-body">
+                            <p>System settings content will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Mark Attendance Modal -->
+    <div class="modal fade" id="markAttendanceModal" tabindex="-1" aria-labelledby="markAttendanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="markAttendanceModalLabel">Mark Attendance</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="nav nav-tabs mb-4" id="attendanceTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="manual-tab" data-bs-toggle="tab" data-bs-target="#manual" type="button" role="tab">Manual Entry</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="qr-tab" data-bs-toggle="tab" data-bs-target="#qr" type="button" role="tab">QR Scanner</button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="bulk-tab" data-bs-toggle="tab" data-bs-target="#bulk" type="button" role="tab">Bulk Upload</button>
+                        </li>
+                    </ul>
+                    
+                    <div class="tab-content" id="attendanceTabContent">
+                        <!-- Manual Entry Tab -->
+                        <div class="tab-pane fade show active" id="manual" role="tabpanel">
+                            <form id="manualAttendanceForm">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="studentId" class="form-label">Student ID</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="fas fa-id-card"></i></span>
+                                            <input type="text" class="form-control" id="studentId" placeholder="Enter student ID" required>
+                                            <button class="btn btn-outline-secondary" type="button" id="scanIdBtn">
+                                                <i class="fas fa-camera"></i>
+                                            </button>
+                                        </div>
+                                        <div class="error-message" id="studentId-error"></div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="classSelect" class="form-label">Class</label>
+                                        <select class="form-select" id="classSelect" required>
+                                            <option value="">Select Class</option>
+                                            <option value="math">Mathematics</option>
+                                            <option value="science">Science</option>
+                                            <option value="english">English</option>
+                                            <option value="history">History</option>
+                                        </select>
+                                        <div class="error-message" id="classSelect-error"></div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="attendanceDate" class="form-label">Date</label>
+                                        <input type="date" class="form-control" id="attendanceDate" required>
+                                        <div class="error-message" id="attendanceDate-error"></div>
+                                    </div>
+                                    
+                                    <div class="col-md-6 mb-3">
+                                        <label for="attendanceStatus" class="form-label">Status</label>
+                                        <select class="form-select" id="attendanceStatus" required>
+                                            <option value="present">Present</option>
+                                            <option value="absent">Absent</option>
+                                            <option value="late">Late</option>
+                                            <option value="excused">Excused</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="attendanceNotes" class="form-label">Notes</label>
+                                    <textarea class="form-control" id="attendanceNotes" rows="3" placeholder="Optional notes about attendance"></textarea>
+                                </div>
+                            </form>
+                        </div>
+                        
+                        <!-- QR Scanner Tab -->
+                        <div class="tab-pane fade" id="qr" role="tabpanel">
+                            <div class="text-center mb-3">
+                                <p class="text-muted">Scan student QR code to automatically mark attendance</p>
+                            </div>
+                            
+                            <div class="qr-scanner-container">
+                                <video id="qr-video" width="100%" style="display: none;"></video>
+                                <canvas id="qr-canvas" width="300" height="200" style="width: 100%; background: #eee;"></canvas>
+                                <div class="d-grid gap-2 mt-3">
+                                    <button class="btn btn-primary" id="startScannerBtn">
+                                        <i class="fas fa-play me-1"></i> Start Scanner
+                                    </button>
+                                    <button class="btn btn-outline-danger" id="stopScannerBtn" style="display: none;">
+                                        <i class="fas fa-stop me-1"></i> Stop Scanner
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-info mt-3">
+                                <i class="fas fa-info-circle me-2"></i> Make sure the QR code is clearly visible within the frame
+                            </div>
+                        </div>
+                        
+                        <!-- Bulk Upload Tab -->
+                        <div class="tab-pane fade" id="bulk" role="tabpanel">
+                            <div class="alert alert-primary">
+                                <i class="fas fa-file-excel me-2"></i> Download our <a href="#" class="alert-link">Excel template</a> to prepare your attendance data
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="bulkFile" class="form-label">Upload Excel File</label>
+                                <input class="form-control" type="file" id="bulkFile" accept=".xlsx, .xls" required>
+                                <div class="error-message" id="bulkFile-error"></div>
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i> Maximum file size: 5MB. Supported formats: .xlsx, .xls
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="saveAttendanceBtn">Save Attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Action Button -->
+    <div class="floating-btn" data-bs-toggle="modal" data-bs-target="#markAttendanceModal">
+        <i class="fas fa-plus"></i>
+    </div>
+    
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qr-scanner@1.4.1/qr-scanner.min.js"></script>
+    
+    <!-- Main JavaScript -->
+    <script>
+        // DOM Elements
+        const loginSection = document.getElementById('login-section');
+        const dashboardSection = document.getElementById('dashboard-section');
+        const loginForm = document.getElementById('login-form');
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const sidebarToggler = document.querySelector('.sidebar-toggler');
+        const sidebar = document.querySelector('.sidebar');
+        const timeRangeDropdown = document.getElementById('timeRangeDropdown');
+        const timeRangeItems = document.querySelectorAll('.time-range');
+        const refreshAttendanceBtn = document.getElementById('refresh-attendance');
+        const markAttendanceModal = document.getElementById('markAttendanceModal');
+        const saveAttendanceBtn = document.getElementById('saveAttendanceBtn');
+        const startScannerBtn = document.getElementById('startScannerBtn');
+        const stopScannerBtn = document.getElementById('stopScannerBtn');
+        const qrVideo = document.getElementById('qr-video');
+        const qrCanvas = document.getElementById('qr-canvas');
+        const spinnerContainer = document.querySelector('.spinner-container');
+        
+        // Navigation elements
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        
+        // Sample data for charts
+        const chartData = {
+            today: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                data: [85, 89, 92, 87, 90, 82]
+            },
+            week: {
+                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                data: [88, 91, 89, 93]
+            },
+            month: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                data: [90, 89, 92, 91, 93, 94]
+            }
+        };
+
+        // QR Scanner instance
+        let qrScanner = null;
+
+        // Show loading spinner
+        function showLoading() {
+            spinnerContainer.style.display = 'flex';
+        }
+
+        // Hide loading spinner
+        function hideLoading() {
+            spinnerContainer.style.display = 'none';
+        }
+
+        // Show error message for a field
+        function showError(fieldId, message) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(`${fieldId}-error`);
+            
+            field.classList.add('is-invalid');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        // Clear error message for a field
+        function clearError(fieldId) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(`${fieldId}-error`);
+            
+            field.classList.remove('is-invalid');
+            errorElement.textContent = '';
+            errorElement.style.display = 'none';
+        }
+
+        // Validate email format
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        // Switch between content sections
+        function showContentSection(sectionId) {
+            // Hide all content sections
+            contentSections.forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show the selected section
+            document.getElementById(`${sectionId}-content`).classList.add('active');
+            
+            // Update active state in sidebar
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('data-section') === sectionId) {
+                    link.classList.add('active');
+                }
+            });
+            
+            // If showing dashboard, initialize charts
+            if (sectionId === 'dashboard') {
+                initCharts('today');
+            }
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in (from localStorage)
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (isLoggedIn) {
+                loginSection.style.display = 'none';
+                dashboardSection.style.display = 'block';
+                // Initialize dashboard
+                showContentSection('dashboard');
+                setupEventListeners();
+            } else {
+                loginSection.style.display = 'block';
+                dashboardSection.style.display = 'none';
+                setupLoginListeners();
+            }
+        });
+
+        // Initialize charts
+        function initCharts(range) {
+            try {
+                // Destroy existing charts if they exist
+                if (window.attendanceChart) {
+                    window.attendanceChart.destroy();
+                }
+                if (window.attendancePieChart) {
+                    window.attendancePieChart.destroy();
+                }
+
+                // Get data for selected time range
+                const data = chartData[range] || chartData.today;
+
+                // Line Chart (Attendance Overview)
+                const lineCtx = document.getElementById('attendanceChart')?.getContext('2d');
+                if (lineCtx) {
+                    window.attendanceChart = new Chart(lineCtx, {
+                        type: 'line',
+                        data: {
+                            labels: data.labels,
+                            datasets: [{
+                                label: 'Attendance Rate (%)',
+                                data: data.data,
+                                backgroundColor: 'rgba(67, 97, 238, 0.1)',
+                                borderColor: 'rgba(67, 97, 238, 1)',
+                                borderWidth: 2,
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: 'rgba(67, 97, 238, 1)',
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    min: 75,
+                                    max: 100,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + '%';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Pie Chart (Attendance Distribution)
+                const pieCtx = document.getElementById('attendancePieChart')?.getContext('2d');
+                if (pieCtx) {
+                    window.attendancePieChart = new Chart(pieCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Present', 'Absent', 'Late', 'Excused'],
+                            datasets: [{
+                                data: [85, 5, 7, 3],
+                                backgroundColor: [
+                                    'rgba(76, 201, 240, 0.8)',
+                                    'rgba(249, 65, 68, 0.8)',
+                                    'rgba(248, 150, 30, 0.8)',
+                                    'rgba(122, 111, 240, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgba(76, 201, 240, 1)',
+                                    'rgba(249, 65, 68, 1)',
+                                    'rgba(248, 150, 30, 1)',
+                                    'rgba(122, 111, 240, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            const label = context.label || '';
+                                            const value = context.raw || 0;
+                                            const total = context.dataset.data.reduce((acc, data) => acc + data, 0);
+                                            const percentage = Math.round((value / total) * 100);
+                                            return `${label}: ${value} (${percentage}%)`;
+                                        }
+                                    }
+                                }
+                            },
+                            cutout: '70%'
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Error initializing charts:', error);
+            }
+        }
+
+        // Setup login event listeners
+        function setupLoginListeners() {
+            // Login form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value.trim();
+                
+                // Clear previous errors
+                clearError('username');
+                clearError('password');
+                
+                // Validate inputs
+                let isValid = true;
+                
+                if (!username) {
+                    showError('username', 'Username is required');
+                    isValid = false;
+                }
+                
+                if (!password) {
+                    showError('password', 'Password is required');
+                    isValid = false;
+                } else if (password.length < 6) {
+                    showError('password', 'Password must be at least 6 characters');
+                    isValid = false;
+                }
+                
+                if (!isValid) return;
+                
+                // Disable login button and show loading
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Logging in...';
+                
+                // Simulate API call
+                setTimeout(() => {
+                    // In a real app, this would be an API call to your backend
+                    if (username === 'admin' && password === 'admin123') {
+                        localStorage.setItem('isLoggedIn', 'true');
+                        loginSection.style.display = 'none';
+                        dashboardSection.style.display = 'block';
+                        showContentSection('dashboard');
+                        setupEventListeners();
+                        
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Login Successful',
+                            text: 'Welcome to Smart Attendance System',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Login Failed',
+                            text: 'Invalid username or password'
+                        });
+                    }
+                    
+                    // Reset login button
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt me-2"></i> Login';
+                }, 1500);
+            });
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const sectionId = this.getAttribute('data-section');
+                    showContentSection(sectionId);
+                });
+            });
+            
+            // Logout button
+            logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                Swal.fire({
+                    title: 'Logout Confirmation',
+                    text: 'Are you sure you want to logout?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#4361ee',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, logout'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        showLoading();
+                        setTimeout(() => {
+                            localStorage.removeItem('isLoggedIn');
+                            loginSection.style.display = 'block';
+                            dashboardSection.style.display = 'none';
+                            
+                            // Reset login form
+                            loginForm.reset();
+                            hideLoading();
+                        }, 500);
+                    }
+                });
+            });
+            
+            // Sidebar toggle for mobile
+            sidebarToggler.addEventListener('click', function() {
+                sidebar.classList.toggle('active');
+            });
+            
+            // Time range dropdown
+            timeRangeItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const range = this.getAttribute('data-range');
+                    timeRangeDropdown.innerHTML = `<i class="fas fa-calendar me-1"></i> ${this.textContent}`;
+                    initCharts(range);
+                });
+            });
+            
+            // Refresh attendance button
+            refreshAttendanceBtn.addEventListener('click', function() {
+                // Simulate loading
+                this.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Refreshing...';
+                this.disabled = true;
+                
+                // Simulate API call
+                setTimeout(() => {
+                    this.innerHTML = '<i class="fas fa-sync-alt me-1"></i> Refresh';
+                    this.disabled = false;
+                    
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Data Refreshed',
+                        timer: 1500,
+                        showConfirmButton: false
+                    });
+                }, 1500);
+            });
+            
+            // Save attendance button
+            saveAttendanceBtn.addEventListener('click', function() {
+                const activeTab = document.querySelector('#attendanceTabs .nav-link.active').id;
+                
+                if (activeTab === 'manual-tab') {
+                    // Validate manual entry form
+                    const studentId = document.getElementById('studentId').value.trim();
+                    const classSelect = document.getElementById('classSelect').value;
+                    const attendanceDate = document.getElementById('attendanceDate').value;
+                    
+                    // Clear previous errors
+                    clearError('studentId');
+                    clearError('classSelect');
+                    clearError('attendanceDate');
+                    
+                    let isValid = true;
+                    
+                    if (!studentId) {
+                        showError('studentId', 'Student ID is required');
+                        isValid = false;
+                    }
+                    
+                    if (!classSelect) {
+                        showError('classSelect', 'Class is required');
+                        isValid = false;
+                    }
+                    
+                    if (!attendanceDate) {
+                        showError('attendanceDate', 'Date is required');
+                        isValid = false;
+                    }
+                    
+                    if (!isValid) return;
+                    
+                    // Simulate saving
+                    showLoading();
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Attendance Recorded',
+                            text: `Student ${studentId} marked for ${document.getElementById('attendanceStatus').value}`,
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            // Close modal
+                            const modal = bootstrap.Modal.getInstance(markAttendanceModal);
+                            modal.hide();
+                            hideLoading();
+                        });
+                    }, 1000);
+                } else if (activeTab === 'qr-tab') {
+                    // QR scanner functionality would go here
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'QR Scanner',
+                        text: 'This feature would scan and process QR codes in a real implementation'
+                    });
+                } else if (activeTab === 'bulk-tab') {
+                    const fileInput = document.getElementById('bulkFile');
+                    
+                    // Clear previous error
+                    clearError('bulkFile');
+                    
+                    if (!fileInput.files.length) {
+                        showError('bulkFile', 'Please select a file to upload');
+                        return;
+                    }
+                    
+                    const file = fileInput.files[0];
+                    const validTypes = ['application/vnd.ms-excel', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'];
+                    
+                    if (!validTypes.includes(file.type)) {
+                        showError('bulkFile', 'Please upload a valid Excel file');
+                        return;
+                    }
+                    
+                    if (file.size > 5 * 1024 * 1024) { // 5MB
+                        showError('bulkFile', 'File size must be less than 5MB');
+                        return;
+                    }
+                    
+                    // Simulate file processing
+                    showLoading();
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'File Uploaded',
+                            text: 'Attendance records will be processed shortly',
+                            timer: 1500,
+                            showConfirmButton: false
+                        }).then(() => {
+                            // Close modal
+                            const modal = bootstrap.Modal.getInstance(markAttendanceModal);
+                            modal.hide();
+                            hideLoading();
+                        });
+                    }, 1500);
+                }
+            });
+            
+            // QR Scanner buttons
+            startScannerBtn.addEventListener('click', function() {
+                this.style.display = 'none';
+                stopScannerBtn.style.display = 'block';
+                qrVideo.style.display = 'block';
+                
+                // Initialize QR Scanner
+                qrScanner = new QrScanner(
+                    qrVideo,
+                    result => {
+                        console.log('QR code detected:', result);
+                        // In a real app, you would process the QR code data here
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'QR Code Scanned',
+                            text: `Detected: ${result}`,
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    },
+                    {
+                        highlightScanRegion: true,
+                        highlightCodeOutline: true,
+                    }
+                );
+                
+                // Start scanning
+                qrScanner.start().then(() => {
+                    console.log('QR Scanner started');
+                }).catch(err => {
+                    console.error('Error starting QR scanner:', err);
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Camera Error',
+                        text: 'Could not access camera. Please check permissions.'
+                    });
+                    stopScannerBtn.click();
+                });
+            });
+            
+            stopScannerBtn.addEventListener('click', function() {
+                if (qrScanner) {
+                    qrScanner.stop();
+                    qrScanner = null;
+                }
+                this.style.display = 'none';
+                startScannerBtn.style.display = 'block';
+                qrVideo.style.display = 'none';
+            });
+            
+            // Close scanner when modal is hidden
+            markAttendanceModal.addEventListener('hidden.bs.modal', function() {
+                stopScannerBtn.click();
+            });
+
+            // Forgot password form
+            const forgotPasswordForm = document.getElementById('forgot-password-form');
+            if (forgotPasswordForm) {
+                forgotPasswordForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('email').value.trim();
+                    
+                    clearError('email');
+                    
+                    if (!email) {
+                        showError('email', 'Email is required');
+                        return;
+                    }
+                    
+                    if (!isValidEmail(email)) {
+                        showError('email', 'Please enter a valid email address');
+                        return;
+                    }
+                    
+                    // Simulate sending reset link
+                    showLoading();
+                    setTimeout(() => {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Reset Link Sent',
+                            text: 'Please check your email for instructions to reset your password',
+                            timer: 2000,
+                            showConfirmButton: false
+                        }).then(() => {
+                            const modal = bootstrap.Modal.getInstance(document.getElementById('forgot-password'));
+                            modal.hide();
+                            hideLoading();
+                        });
+                    }, 1500);
+                });
+            }
+        }
+    </script>
+</body>
+</html>
